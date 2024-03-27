@@ -80,6 +80,11 @@ def wing_extraction(filename): # Avec l'extension
     #Loop through my contours to find rectangles and put them in a list, so i can view them individually later.
     cntrRect = []
     idx = 0
+    if (os.path.isdir("./save")):
+         os.chdir("./save")
+    else:
+        os.mkdir("./save")
+        os.chdir("./save")
     for i in contours:
             epsilon = 0.05*cv2.arcLength(i,True) # Calculate the perimeter of the contour, second parameter is True 
             # because we want the countour to be closed
