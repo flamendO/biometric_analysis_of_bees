@@ -16,7 +16,7 @@ def wing_extraction(filename): # Avec l'extension
     
     nom_fichier = filename 
 
-    plt.figure(figsize=(15,15))
+    # plt.figure(figsize=(15,15))
     image = skio.imread(nom_fichier)
     # mask = skio.imread('./mask.jpg')
     size = image[:,:,0].shape
@@ -45,20 +45,16 @@ def wing_extraction(filename): # Avec l'extension
     
 
     # Result without the threshold
-    seu_, th_ = cv2.threshold(image,0,255,cv2.THRESH_BINARY+cv2.THRESH_OTSU)
+    # seu_, th_ = cv2.threshold(image,0,255,cv2.THRESH_BINARY+cv2.THRESH_OTSU)
     
 
     # Then we want to keep the rectangles only so we do morpholigcal operation : opening 
-    #fig = plt.figure(figsize=(15,15))
     th2 = th.copy()
     kernel = cv2.getStructuringElement(cv2.MORPH_RECT,(17,17))
     opening = cv2.morphologyEx(th2, cv2.MORPH_CLOSE, kernel)
 
     kernel = cv2.getStructuringElement(cv2.MORPH_RECT,(17,17))
     opening2 = cv2.morphologyEx(opening, cv2.MORPH_CLOSE, kernel)
-    #plt.xticks([])
-    #plt.yticks([])
-    #plt.imshow(opening2, cmap='gray')
 
     # To ensure that the rectangles are correctly detected we widen their countours
 
@@ -73,21 +69,8 @@ def wing_extraction(filename): # Avec l'extension
 
     final3 = cv2.dilate(final2,kernel,iterations = 4)
 
-    # final3 = cv2.dilate(final2, kernel, iterations = 1)
-    # kernel = cv2.getStructuringElement(cv2.MORPH_RECT,(12,12))
-    # final4 = cv2.morphologyEx(final3, cv2.MORPH_CLOSE, kernel, iterations = 2)
-
-    #plt.imshow(final3, cmap = 'gray')
-    #plt.subplot(1,2,2)
-    #plt.imshow(final3, cmap = 'gray')
-
-    #plt.xticks([])
-    #plt.yticks([])
-    # cv2.imwrite('./extracted_wings/mask.png', final3)
-
-    # fig = plt.figure(figsize=(15,15))
+    
     cont1 = final3.copy()
-    # plt.imshow(cont1, cmap ='gray')
 
     image = skio.imread(nom_fichier)
     # cnts = cv2.findContours(cont1, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
@@ -96,7 +79,7 @@ def wing_extraction(filename): # Avec l'extension
 
     #Loop through my contours to find rectangles and put them in a list, so i can view them individually later.
     cntrRect = []
-    idx = 1
+    idx = 0
     for i in contours:
             epsilon = 0.05*cv2.arcLength(i,True) # Calculate the perimeter of the contour, second parameter is True 
             # because we want the countour to be closed
@@ -104,21 +87,22 @@ def wing_extraction(filename): # Avec l'extension
             # precision factor for approximating the rectangle.
             approx = cv2.approxPolyDP(i,epsilon,True)
             if len(approx) == 4:
+                
                 cv2.drawContours(image,cntrRect,-1,(0,255,0),2)
                 cntrRect.append(approx)
                 x, y, w, h = cv2.boundingRect(i)
                 if w > 400 or h > 600 or w < 100 or h < 100 :
                     continue
                 roi = image[y:y + h, x:x + w]
-                cv2.imwrite('./extracted_wings/'+ str(idx) + '.png', roi)
-                
                 idx += 1
+                cv2.imwrite(str(os.getcwd()) + '/' + str(idx) + '.png', roi)
                 
-    print('Number of rectangles detected : '+ str(idx - 1))
-    cv2.imwrite('test_im.png', image)
-    contours = skio.imread('./test_im.png')
-    # plt.imshow(contours)
-    # plt.show()
+                
+                
+    # print('Number of rectangles detected : '+ str(idx - 1))
+    # cv2.imwrite('test_im.png', image)
+    # contours = skio.imread('./test_im.png')
+    return idx
 
 def extract_file_paths(directory):
     # List all files in the directory
@@ -129,11 +113,12 @@ def extract_file_paths(directory):
     
     return file_paths
 
-directory = './photo_bleu/'
-file_paths = extract_file_paths(directory)
-for file_path in file_paths:
-    wing_extraction(file_path)
-    print(file_path)
+
+# directory = './photo_bleu/'
+# file_paths = extract_file_paths(directory)
+# for file_path in file_paths:
+#    wing_extraction(file_path)
+#    print(file_path)
 
 
 

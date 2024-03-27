@@ -8,7 +8,8 @@ import skimage.filters as skf
 import skimage.morphology as morpho
 from skimage.util import img_as_float
 
-def rotate_wing(image):
+def rotate_wing(img_path):
+    image = sk.imread(img_path)
     shape = image.shape
     
     # Vérifier si l'image est en niveaux de gris
@@ -34,8 +35,9 @@ def rotate_wing(image):
     seuil = 0.5  
     image_binaire = (image_ero > seuil).astype(np.uint8)
     
-    plt.imshow(image_binaire, cmap='gray')
-    plt.show()
+    # plt.imshow(image_binaire, cmap='gray')
+    
+    # plt.show()
     
     lines = cv2.HoughLinesP(image_binaire, 1, np.pi / 180, threshold=100, minLineLength=100, maxLineGap=10)
     
@@ -45,16 +47,16 @@ def rotate_wing(image):
             x1, y1, x2, y2 = line[0]
             cv2.line(image_binaire, (x1, y1), (x2, y2), (255, 255, 255), 1)
 
-        plt.imshow(image_binaire, cmap='gray')
-        plt.show()
+        # plt.imshow(image_binaire, cmap='gray')
+        # plt.show()
         angles = []
         for line in lines:
             x1, y1, x2, y2 = line[0]
             angle = np.arctan2(y2 - y1, x2 - x1) * 180 / np.pi
             angles.append(angle)
-        print(angles)
+        
         ang = np.abs(np.median(angles))
-        print(ang)
+    
 
         
         image_rot = rotate(image, -(90-ang), resize=False, center=None, order=None,
