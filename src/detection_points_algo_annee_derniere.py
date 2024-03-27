@@ -355,7 +355,7 @@ def skelly(img):
 
     # plot(img_centered)
 
-    tresh = img_centered > 0.30*np.max(img_centered)
+    tresh = img_centered > 0.05*np.max(img_centered)
     tresh = tresh.astype(np.uint8)
 
     # plot(tresh)
@@ -396,12 +396,12 @@ for i in range(0, 13):
 
 
 
-def fonction_principale (chemin):
+def detection_points (chemin):
     
     #ailes filtrées/Ruche_5_aile_4.jpg exemple de chemin
     plt.close('all')
     
-    img = skio.imread(main_pathname / chemin)
+    img = chemin
     img = img[:, :, :3]
     
     img = skelly(img)

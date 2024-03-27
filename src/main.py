@@ -1,13 +1,15 @@
 import os
 from wing_extraction import wing_extraction
 from rotation_aile import rotate_wing
+from detection_points_algo_annee_derniere import detection_points
 import numpy as np
 import matplotlib.pyplot as plt
 
 
-# Chemin du fichier 
 
-path  = './images/1.jpg'
+
+# Chemin du fichier 
+path  = '../images/1.jpg'
 
 # Séparation des ailes 
 
@@ -24,6 +26,14 @@ for i in range(1,indice+1):
     images_list.append(np.array(image_tmp))
 
 # suite 
+
+for i in range (len(images_list)):
+    plt.figure()
+    plt.imshow(images_list[i])
+    
+    
+#detection_points(images_list[4])
+
 
 
 
