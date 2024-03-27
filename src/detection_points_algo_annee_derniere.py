@@ -226,7 +226,7 @@ def detection_pattern_cubital(image):
     
     #on prend un pattern de référence qu'on a extrait à la main sur une image 
     #puis on s'en sert pour chercher le même pattern dans l'image à traiter 
-    pattern_ref = skio.imread(main_pathname / 'Image 2024 /Masque_cubital.png')
+    pattern_ref = skio.imread(main_pathname / '../images /Masque_cubital.png')
     pattern_ref = pattern_ref[:, :, :3]
     pattern_ref = skc.rgb2gray(pattern_ref)
 
@@ -277,7 +277,7 @@ def detection_pattern_cubital(image):
 #fonction pour extraire le pattern anthem
 def detection_pattern_anthem(image):
     
-    pattern_ref = skio.imread(main_pathname / 'Image 2024 /Masque_anthem_2.png')
+    pattern_ref = skio.imread(main_pathname / '../images /Masque_anthem.png')
     pattern_ref = pattern_ref[:, :, :3]
     pattern_ref = skc.rgb2gray(pattern_ref)
 
@@ -398,7 +398,7 @@ for i in range(0, 13):
 
 def fonction_principale (chemin):
     
-    #ailes filtrées/Ruche_5_aile_4.jpg example de chemin
+    #ailes filtrées/Ruche_5_aile_4.jpg exemple de chemin
     plt.close('all')
     
     img = skio.imread(main_pathname / chemin)
@@ -406,9 +406,9 @@ def fonction_principale (chemin):
     
     img = skelly(img)
     img = ~ img 
-    #img = img.astype(np.uint8)
-    skio.imsave(main_pathname/'image 2024/img.png', img)
-    #img = pre_traitement_image(img)
+    
+    #skio.imsave(main_pathname/'../images/img.png', img)
+    
     
     plt.figure()
     plt.title('la')
