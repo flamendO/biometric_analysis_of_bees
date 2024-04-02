@@ -80,11 +80,15 @@ def wing_extraction(filename): # Avec l'extension
     #Loop through my contours to find rectangles and put them in a list, so i can view them individually later.
     cntrRect = []
     idx = 0
-    if (os.path.isdir("./save")):
-         os.chdir("./save")
+    if os.path.isdir("./save"):
+        file_paths = [f"./save/{file}" for file in os.listdir("./save")]
+        for file_path in file_paths:
+            os.remove(file_path)
     else:
         os.mkdir("./save")
-        os.chdir("./save")
+
+    os.chdir("./save")
+
     for i in contours:
             epsilon = 0.05*cv2.arcLength(i,True) # Calculate the perimeter of the contour, second parameter is True 
             # because we want the countour to be closed
@@ -102,8 +106,8 @@ def wing_extraction(filename): # Avec l'extension
                 idx += 1
                 cv2.imwrite(str(os.getcwd()) + '/' + str(idx) + '.png', roi)
                 
-                
-                
+    
+                   
     # print('Number of rectangles detected : '+ str(idx - 1))
     # cv2.imwrite('test_im.png', image)
     # contours = skio.imread('./test_im.png')

@@ -30,7 +30,7 @@ def rotate_wing(img_path):
     image_ouv = morpho.binary_closing(image_gray, rectan)
     image_f = morpho.binary_opening(image_ouv, rectan)
     image_ero = morpho.binary_dilation(image_f, morpho.square(5))
-    image_ero = morpho.binary_dilation(image_f, morpho.rectangle(10, 3))
+    image_ero = morpho.binary_dilation(image_f, morpho.rectangle(13, 3))
 
     seuil = 0.5  
     image_binaire = (image_ero > seuil).astype(np.uint8)
