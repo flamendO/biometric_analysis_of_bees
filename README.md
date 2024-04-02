@@ -20,6 +20,13 @@ neural networks
 In both cases, preprocessing of the wing images will be necessary to ensure usability.
 images
 
+# Raw images
+
+![2](https://github.com/flamendO/biometric_analysis_of_bees/assets/78015005/850889bc-306e-4a37-93de-16ca24995106)
+
+The objective is to be able to isolate each wing, carry out a treatment and carry out a detection of particular points to make ulnar calculations.
+
+
 # Authors
 
 @aulympe
