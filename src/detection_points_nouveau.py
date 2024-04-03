@@ -12,13 +12,16 @@ import skimage.io as skio
 import matplotlib.pyplot as plt
 import cv2
 import sys
-import skimage.morphology as skm
 import numpy as np
 from math import sqrt
 import skimage.util as sku
 import skimage.color as skc
 import skimage.feature as skf
 import skimage.filters as skff
+import skimage.exposure as ske 
+import skimage.restoration as skr 
+import skimage.morphology as skm
+import skimage.util as sku
 
 np.set_printoptions(threshold=sys.maxsize)
 
@@ -206,8 +209,6 @@ def detection_automatique_anthem (img, dist2):
     #calcul de l'indice anthem
     dist = []
     dist.append(np.sqrt(((list_coord[0][0] - list_coord[1][0])**2) + (list_coord[0][1] - list_coord[1][1])**2))
-    #dist.append(np.sqrt(((list_coord[0][0] - list_coord[2][0])**2) + (list_coord[0][1] - list_coord[2][1])**2))
-    #dist.append(np.sqrt(((list_coord[1][0] - list_coord[2][0])**2) + (list_coord[1][1] - list_coord[2][1])**2))
     print("Les distances pour l'indice anthem sont :", dist)
     A = max(dist)
     
@@ -368,13 +369,14 @@ def skelly(img):
     marker = skm.erosion(tresh, square5)
     geo = marker
 
-    for i in range(1, 300):
+    for i in range(1, 500):
         dil = skm.dilation(geo, square3)
         geo = np.minimum(dil, mask)
-        # plot(geo) # pour afficher la reconstruction, décommenter cette ligne
+        #plot(geo) # pour afficher la reconstruction, décommenter cette ligne
 
     geo = skm.closing(geo, skm.square(5))
     skeleton = skm.thin(geo)*1  # thin ou bien skeletonize ?
+    #skeleton = skm.skeletonize(geo)
     # plot(skeleton)
     return skeleton
 
@@ -396,8 +398,20 @@ for i in range(0, 13):
 
 
 
+#ajout de la fonction d'Alexis
+def filtrage(img):
+    
+    img = skc.rgb2gray(img)
+    img = ske.equalize_adapthist(img,clip_limit=0.01)
+    img = skr.denoise_bilateral(img)
+    img = skm.opening(img,footprint = skm.diamond(2))
+    img = skm.black_tophat(img, footprint = skm.diamond(9))
+    
+    return img
 
-def detection_points (chemin):
+
+
+def detection_point (chemin):
     
     #ailes filtrées/Ruche_5_aile_4.jpg exemple de chemin
     plt.close('all')
@@ -405,10 +419,12 @@ def detection_points (chemin):
     img = chemin
     img = img[:, :, :3]
     
-    img = skelly(img)
-    img = ~ img 
+    #img = skelly(img)
+    img = filtrage(img)
+    #img = sku.img_as_uint(img)
+    #img = ~ img 
     
-    #skio.imsave(main_pathname/'../images/img.png', img)
+    skio.imsave(main_pathname/'../images/img.png', img)
     
     
     plt.figure()
