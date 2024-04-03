@@ -7,8 +7,10 @@ import skimage.color as skc
 import skimage.filters as skf
 import skimage.morphology as morpho
 from skimage.util import img_as_float
-
+import os
 def rotate_wing(img_path):
+    
+
     image = sk.imread(img_path)
     shape = image.shape
     

@@ -10,6 +10,7 @@ import matplotlib.pyplot as plt
 from time import time
 import skimage.morphology as morpho
 from skimage.transform import hough_line, hough_line_peaks, rotate
+import shutil
 
 
 def wing_extraction(filename): # Avec l'extension
@@ -80,13 +81,12 @@ def wing_extraction(filename): # Avec l'extension
     #Loop through my contours to find rectangles and put them in a list, so i can view them individually later.
     cntrRect = []
     idx = 0
+    print(os.getcwd())
     if os.path.isdir("./save"):
-        file_paths = [f"./save/{file}" for file in os.listdir("./save")]
-        for file_path in file_paths:
-            os.remove(file_path)
-    else:
-        os.mkdir("./save")
+        shutil.rmtree("./save")
+        print("Fichier supprimé")
 
+    os.mkdir("./save")
     os.chdir("./save")
 
     for i in contours:
@@ -106,8 +106,7 @@ def wing_extraction(filename): # Avec l'extension
                 idx += 1
                 cv2.imwrite(str(os.getcwd()) + '/' + str(idx) + '.png', roi)
                 
-    
-                   
+    os.chdir("../")            
     # print('Number of rectangles detected : '+ str(idx - 1))
     # cv2.imwrite('test_im.png', image)
     # contours = skio.imread('./test_im.png')

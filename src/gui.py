@@ -61,7 +61,7 @@ def perform_analysis():
 
     # Rotation des ailes 
     angles = np.zeros((indice)) # Array avec les angles de rotation de chaque image si nécessaire
-    
+    os.chdir("./save")
     for i in range(1, indice+1):
         image_tmp, angle_tmp = rotate_wing(os.path.join(os.getcwd(), str(i) + '.png'))
         angles[i-1] = angle_tmp
@@ -72,6 +72,7 @@ def perform_analysis():
         progress_value = (i / indice) * 100 # mise a jour barre de progression
         progress_bar["value"] = progress_value
         root.update_idletasks()
+    os.chdir("../")
 
     # plt.imshow(images_list[12])
     # plt.show()
@@ -99,8 +100,9 @@ button1 = customtkinter.CTkButton(master=frame, text="Importer", command=open_fi
 button1.pack(pady=300, padx=0)
 button1.place(x=100,y=500)
 
-# button2 = customtkinter.CTkButton(master=frame, text="Analyse", command=analyse)
-# button2.pack(expand=True)
+button2 = customtkinter.CTkButton(master=frame, text="Analyse", command=analyse)
+button2.place(x=350,y=500)
+#button2.pack(expand=True)
 
 # button1.grid(row=2, column=0)
 
