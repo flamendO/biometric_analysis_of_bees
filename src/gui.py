@@ -33,7 +33,6 @@ def open_file_dialog():
         image=customtkinter.CTkImage(light_image=Image.open(filename), dark_image=Image.open(filename), size=(400,250))
         label1 = customtkinter.CTkLabel(root, text="", image=image)
         label1.place(x=100,y=150)
-
         return filename
     
 def analyse():
@@ -92,17 +91,25 @@ label.pack(pady=12, padx=10)
 
 
 
+
+
+
 button1 = customtkinter.CTkButton(master=frame, text="Importer", command=open_file_dialog)
 
 button1.pack(pady=300, padx=0)
 button1.place(x=100,y=500)
 
-button2 = customtkinter.CTkButton(master=frame, text="Analyse", command=analyse)
+# button2 = customtkinter.CTkButton(master=frame, text="Analyse", command=analyse)
+# button2.pack(expand=True)
 
-
-button2.place(x=400,y=500)
 # button1.grid(row=2, column=0)
 
+
+## FRAME 1
+
+frame1 = customtkinter.CTkFrame(master=root, fg_color="#8D6F3A", border_color="#FFCC70", border_width=2)
+
+frame.pack(expand=True)
 
 
 root.mainloop()
