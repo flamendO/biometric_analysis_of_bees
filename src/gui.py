@@ -12,6 +12,7 @@ import os
 from wing_extraction import wing_extraction
 from rotation_aile import rotate_wing
 from tkinter.font import Font
+from detection_points_nouveau import detection_point
 
 # customtkinter.set_appearance_mode("dark")
 # customtkinter.set_default_color_theme("green")
@@ -86,12 +87,15 @@ def perform_analysis():
         progress_value = (i / indice) * 100 # mise a jour barre de progression
         # progress_bar["value"] = progress_value
         root.update_idletasks()
+        
+    detection_point(images_list[2])
     os.chdir("../")
     progress_bar.stop()
     
-
+    
     # plt.imshow(images_list[12])
     # plt.show()
+    
 
 
 def results():
