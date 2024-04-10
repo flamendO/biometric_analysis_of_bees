@@ -70,6 +70,7 @@ def cornerharris (image, para1, threshold):
     
     image = np.float32(image)
     
+    
     # Première étape
     points = cv2.cornerHarris(image, 5, 3, para1)  # Paramètres à régler
     
@@ -128,7 +129,7 @@ def detection_automatique_cubital (img):
     #img = pre_traitement_image(img)
     
     #premier appel à corner_harris
-    a = 0.001
+    a = 0.05
     b = 0.01
     
     list_coord = cornerharris(img, a, b)
@@ -138,7 +139,7 @@ def detection_automatique_cubital (img):
     
     while ( taille != 3 ): 
         
-        if ( taille == 0 ):
+        if ( taille == 0 or taille == 1 or taille == 2 ):
             print ("Pas assez de points détectés pour indice cubital")
             break 
   
@@ -184,7 +185,7 @@ def detection_automatique_anthem (img, dist2):
     #img = pre_traitement_image(img)
     
     #premier appel à corner_harris
-    a = 0.001
+    a = 0.05
     b = 0.01
     
     list_coord = cornerharris(img, a, b)
@@ -194,7 +195,7 @@ def detection_automatique_anthem (img, dist2):
     
     while ( taille != 2 ): 
         
-        if ( taille == 0 ):
+        if ( taille == 0 or taille == 1 ):
             print ("Pas assez de points détectés pour indice cubital")
             break 
               
@@ -404,16 +405,38 @@ def filtrage(img):
     img = skc.rgb2gray(img)
     img = ske.equalize_adapthist(img,clip_limit=0.01)
     img = skr.denoise_bilateral(img)
-    img = skm.opening(img,footprint = skm.diamond(2))
+    img = skm.opening(img,footprint = skm.diamond(1))
     img = skm.black_tophat(img, footprint = skm.diamond(9))
     
+    img = sku.img_as_uint(img)
+    img = sku.img_as_ubyte(img)
+    img = img/255
+    seuil = 0.2
+    img = (img < seuil)  #image binaire
+    
+    
+    return img
+
+def filtrage_2(img):
+    
+    img = skc.rgb2gray(img)
+    img = ske.equalize_adapthist(img,clip_limit=0.01)
+    img = skr.denoise_bilateral(img)
+    img = skm.opening(img,footprint = skm.diamond(1))
+    img = sku.invert(img)
+    img = skff.difference_of_gaussians(img, 1,1.1)
+    img = img + 8
+    print(img.dtype)
+    print(img)
+    
+            
     return img
 
 
 
 def detection_point (chemin):
     
-    #ailes filtrées/Ruche_5_aile_4.jpg exemple de chemin
+    
     plt.close('all')
     
     img = chemin
@@ -421,8 +444,6 @@ def detection_point (chemin):
     
     #img = skelly(img)
     img = filtrage(img)
-    #img = sku.img_as_uint(img)
-    #img = ~ img 
     
     skio.imsave(main_pathname/'../images/img.png', img)
     
