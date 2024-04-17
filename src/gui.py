@@ -13,6 +13,11 @@ from wing_extraction import wing_extraction
 from rotation_aile import rotate_wing
 from tkinter.font import Font
 from detection_points_nouveau import detection_point
+from excel import toExcel
+import pandas as pd
+import sys
+import shutil
+import time
 
 # customtkinter.set_appearance_mode("dark")
 # customtkinter.set_default_color_theme("green")
@@ -27,9 +32,14 @@ root.config(bg=bg)
 
 filename = ""
 progress_bar = None
+affichage_result_key = False
+
 
 def exit():
-    root.destroy()
+    global root
+    root.quit()  # Terminer le mainloop de Tkinter
+    root.destroy()  # Détruire la fenêtre principale
+    sys.exit()  # Terminer le programme proprement
 
 def importer():
     global filename
@@ -51,18 +61,30 @@ def open_file_dialog():
 
 def open_bar():
     global progress_bar
-    progress_window = tk.Toplevel(root)
-    progress_window.title("Generating")
-    progress_window.geometry("300x100")
+    global affichage_result_key
+    global affichage_result
+    if not filename:
+        messagebox.showerror("Erreur", "Aucune image n'a été selectionné !")
+    else:
+        
+        progress_window = tk.Toplevel(root)
+        progress_window.title("Generating")
+        progress_window.geometry("300x100")
     
-    progress_bar = ttk.Progressbar(progress_window, orient="horizontal", length=200, mode="indeterminate")
-    progress_bar.pack(pady=20)
-    perform_analysis()
-    progress_window.destroy()
+        progress_bar = ttk.Progressbar(progress_window, orient="horizontal", length=200, mode="indeterminate")
+        progress_bar.pack(pady=20)
+        perform_analysis()
+        progress_window.destroy()
 
 
 
 def perform_analysis():
+    tmp_path = "./tmp/"
+    shutil.rmtree(tmp_path)
+    os.mkdir("./tmp/")
+
+    global filename
+    
     global progress_bar
     global images_list
     images_list=[]
@@ -87,29 +109,59 @@ def perform_analysis():
         progress_value = (i / indice) * 100 # mise a jour barre de progression
         # progress_bar["value"] = progress_value
         root.update_idletasks()
-        
-    detection_point(images_list[2])
-    os.chdir("../")
+
+
+    global data_set
+    global df
+    data_set = np.zeros((14,2)) # 2 colonnes qui correspondent aux indices cubitales et anthem
+    i = 0
+    for img_retourne in images_list:
+        indice_cubi , indice_anthem = detection_point(img_retourne)
+        data_set[i,:] = np.array([indice_cubi, indice_anthem])
+        i+=1
     progress_bar.stop()
+    os.chdir("../")
+    columns = ['Indice cubitale', 'Indice Hantel']
+    df = pd.DataFrame(data_set, columns=columns)
     
-    
+
+    font2=customtkinter.CTkFont(family="Sans serif", size=20, weight="bold")
+    affichage_result = tk.Label(root, text="ANALYSE TERMINÉE ! ", font=font2, bg=bg, fg="white")
+    affichage_result.place(y=500, x=400)
     # plt.imshow(images_list[12])
     # plt.show()
     
 
 
+
 def results():
-    print("A FAIRE")
+    font2=customtkinter.CTkFont(family="Sans serif", size=20, weight="bold")
+    global df
 
+    if 'df' not in globals() or df.empty:
+        messagebox.showerror("Erreur", "Aucune analyse n'a été effectuée.")
+    else:
+        if messagebox.askyesno("Confirmation", "Souhaitez-vous sauvegarder les images de l'analyse ?"):
+            # Ouvrir le sélecteur de dossier pour sélectionner le dossier de sauvegarde des images
+            dossier_images = filedialog.askdirectory()
+            if dossier_images:
+                
+                shutil.move("./tmp/", dossier_images)
+                os.mkdir("./tmp")
 
+        filepath = filedialog.asksaveasfilename(defaultextension=".xlsx", filetypes=[("Fichiers Excel", "*.xlsx"), ("Tous les fichiers", "*.*")])
+        
+        if filepath:
+            toExcel(df, filepath)
+            affichage_result_2 = tk.Label(root, text="FICHIER SAUVEGARDÉ ! ",font=font2, bg=bg, fg="white" )
+            affichage_result_2.place(x= 395, y = 550)
+        
 
-# frame = customtkinter.CTkFrame(master=root)
-# frame.pack(pady=10, padx=10, expand=False)
 
 
 ####### LOGO
 
-img_logo = Image.open("./images/logo.png")
+img_logo = Image.open("./images_logo/logo.png")
 resized_logo = img_logo.resize((100,100), Image.Resampling.LANCZOS)
 img_logo_resized = ImageTk.PhotoImage(resized_logo)
 
