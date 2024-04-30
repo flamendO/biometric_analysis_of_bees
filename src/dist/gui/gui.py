@@ -201,8 +201,8 @@ button3.place(x=550, y=150)
 button4 = customtkinter.CTkButton(master=root, text="QUITTER", command=exit, font=font1)
 button4.place(x=800, y=150)
 
-button5 = customtkinter.CTkButton(master=root, text="AIDE", command=help, font=font1)
-button5.place(x=430, y=500)
+button5 = customtkinter.CTkButton(master=root, text="AIDE / DOCUMENTATION", command=help, font=font1)
+button5.place(x=380, y=500)
 
 
 def is_admin():
