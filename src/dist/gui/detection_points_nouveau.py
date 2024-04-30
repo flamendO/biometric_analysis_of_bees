@@ -13,37 +13,31 @@ import matplotlib.pyplot as plt
 import cv2
 import sys
 import numpy as np
-from math import sqrt
 import skimage.util as sku
 import skimage.color as skc
 import skimage.feature as skf
-import skimage.filters as skff
 import skimage.exposure as ske 
 import skimage.restoration as skr 
 import skimage.morphology as skm
-import skimage.util as sku
-import os
+
 
 np.set_printoptions(threshold=sys.maxsize)
 global indice_images
 indice_images = 0
 
 plt.rcParams['image.cmap'] = 'gray'
-
-
 main_pathname = Path.cwd()
 
 
 
 
-#fonction qui détecte les points aux intersection 
 def cornerharris (image, para1, threshold):
     
     '''
     Fonction qui permet de detecter les intersections à l'aide de la fonction cornerHarris de OpenCV.
     
-    L'image en entrée est en binaire (0, 1), codé en float32. Elle est pré-filtré avant son entrée dans cornerHarris par la fonction skelly (nettoyage et affinage). 
-    On obtient en sortie la liste des coordonnées des intersections de l'image.
+    L'image en entrée est en binaire (0, 1). Elle est pré-filtré avant son entrée dans cornerHarris par la fonction filtrage (nettoyage et affinage). 
+    
     
     Première étape = détéction des intersections grâce à cornerHarris (paramètres : image / taille du voisinage / 
                     paramètre d'ouverture du filtre de Sobel / paramètre libre de l'équation de détéction de Harris. 
@@ -58,14 +52,13 @@ def cornerharris (image, para1, threshold):
     '''
     
     image = np.float32(image)
-    #image = pre_traitement_image(image)
-    
+        
     
     # Première étape
-    points = cv2.cornerHarris(image, 5, 3, para1)  # Paramètres à régler
+    points = cv2.cornerHarris(image, 5, 3, para1)  # para1 : mis à jour automatiquement par detection_automatique_cubital
     
     # Deuxième étape
-    points_thresh = (points > threshold) * 1 # Paramètres à régler
+    points_thresh = (points > threshold) * 1       # idem pour threshold
     points_thresh = sku.img_as_ubyte(points_thresh)
     
     # Troisième étape
@@ -109,8 +102,7 @@ def cornerharris (image, para1, threshold):
     indice_images = indice_images + 1
     plt.close()
     
-    #plt.show()
-    
+        
     return (liste_coord)
 
 
@@ -118,17 +110,31 @@ def cornerharris (image, para1, threshold):
 #fonction qui calcule l'indice cubital
 def detection_automatique_cubital (img):
     
-    img = detection_pattern_cubital(img)   #on travaille maintenant sur le pattern souhaité
+    '''Fonction pour le traitement de l'indice cubital
+    
+        Première étape : appel de la fonction cornerharris (image, para1, threshold) avec des paramètres initiaux
+        
+        Deuxième étape : Boucle tant que on a pas 3 points détectés (nécessaires pour le calcul de l'indice cubital)
+                         Cas d'erreur si moins de points détectés
+                         Mise à jour du seuillage puis appel à cornerharris pour réduire le nombre de point et n'avoir que les intersections
+        
+        Troisième étape : calcul de l'indice cubital
+                          remarque : on retourne également la liste des distances qui sera utile pour l'indice Hantel'
+    
+    
+    '''
+    
+    img = detection_pattern_cubital(img)   #on travaille sur la zone détectée par detection_automatique_cubital
     img = skm.skeletonize(1-img)
     
-    #premier appel à corner_harris
+    #Première etape
     a = 0.05
     b = 0.01
     
     list_coord = cornerharris(img, a, b)
     taille = len(list_coord)
     
-    
+    #Deuxième étape 
     while ( taille != 3 ): 
         
         if ( taille == 0 or taille == 1 or taille == 2 ):
@@ -139,7 +145,7 @@ def detection_automatique_cubital (img):
         taille = len(list_coord)
         
     
-    #calcul de l'indice cubital 
+    #Troisième étape 
        
     dist = []
     dist.append(np.sqrt(((list_coord[0][0] - list_coord[1][0])**2) + (list_coord[0][1] - list_coord[1][1])**2))
@@ -152,30 +158,38 @@ def detection_automatique_cubital (img):
                 A = a
     
     indice_cubital= A/B
-    #Affichage de l'indice cubital pour l'aile sélectionnée
+    
 
     return (dist, indice_cubital)
 
 
-#fonction qui calcule l'indice anthem
-def detection_automatique_anthem (img, dist2):
+
+
+def detection_automatique_hantel (img, dist2):
+    
+    '''Fonction pour le traitement de l'indice Hantel
+    
+    fonctionnement similaire à la fonction précédente
+    
+    
+    '''
     
 
     if (dist2 == 0): #si la distance pour l'indice cubitale est nul, alors on a pas réussi à exploiter l'image donc on renvoit 0 aussi ici
         return 0
 
-    img = detection_pattern_anthem(img)   #on travaille maintenant sur le pattern souhaité
-    #img = pre_traitement_image(img)
+    img = detection_pattern_hantel(img)   #on travaille sur la zone détectée par detection_automatique_hantel
     img = skm.skeletonize(1-img)
-    #premier appel à corner_harris
+    
+    #Première étape
     a = 0.05
     b = 0.01
     
     list_coord = cornerharris(img, a, b)
     taille = len(list_coord)
-    #print ("le nombre de points détectés au début est : ",taille)
     
     
+    #Deuxième étape
     while ( taille != 2 ): 
         
         if ( taille == 0 or taille == 1 ):
@@ -187,7 +201,7 @@ def detection_automatique_anthem (img, dist2):
         taille = len(list_coord)
     
     
-    #calcul de l'indice anthem
+    #Troisième étape
     dist = []
     dist.append(np.sqrt(((list_coord[0][0] - list_coord[1][0])**2) + (list_coord[0][1] - list_coord[1][1])**2))
     A = max(dist)
@@ -195,16 +209,30 @@ def detection_automatique_anthem (img, dist2):
     #on récupère la longeur utile qui a été trouvée dans l'indice cubital
     B = max(dist2)
 
-    indice_anthem = A/B    
+    indice_hantel = A/B    
     
-    return indice_anthem
+    return indice_hantel
     
 
 
 
 
-#fonction pour extraire le pattern cubital -> utilisation de la fonction matchTemplate
+
 def detection_pattern_cubital(image): 
+    
+    '''Fonction pour détecter la zone utile sur laquelle la détection va être réalisée pour l'indice cubital
+    
+    Première étape : test des 6 templates avec la fonction match_template
+                     Cette fonction fait "glisser" le masque sur toute l'image et retourne la zone avec le maximum de ressemblance
+                     On stocke ces résultats dans une liste
+    
+    Deuxième étape : On souhaite dans la liste récupérer le maximum des maximums
+                     On donne l'image de la zone à la fonction detection_automatique_cubital (img)
+    
+    
+    '''
+    
+    #Première étape
     
     matchs = []
     for k in range (1, 6) :
@@ -214,7 +242,7 @@ def detection_pattern_cubital(image):
         result = skf.match_template(image, pattern_ref, mode = 'mean')
         matchs.append(result)
     
-    #on cherche le maximum des matchs pour les différents template
+    #Deuxième étape
     max_unique_value = float('-inf')
     maxi = None
     
@@ -228,35 +256,39 @@ def detection_pattern_cubital(image):
             max_unique_value = current_max_unique_value
             maxi = i
     
+    #Affichage de l'image originale et la zone correspondant au motif
     ij = np.unravel_index(np.argmax(maxi), maxi.shape)
     x, y = ij[::-1]
 
-    # Afficher l'image originale et la zone correspondant au motif
     fig, (ax1, ax2, ax3) = plt.subplots(1, 3, figsize=(8, 3))
-    
     hcoin, wcoin = pattern_ref.shape
-    
     matched_area = image[y:y+hcoin, x:x+wcoin]
 
     
- 
     
     return (matched_area)
 
 
 
-#fonction pour extraire le pattern anthem
-def detection_pattern_anthem(image):
+
+def detection_pattern_hantel(image):
     
+    '''Fonction pour détecter la zone utile sur laquelle la détection va être réalisée pour l'indice Hantel
+    
+    fonction similaire à la précédente
+    '''
+    
+    
+    #Première étape
     matchs = []
     for k in range (1, 8) :
-        pattern_ref = skio.imread(main_pathname / './images /Masque_anthem_{}.png'.format(k))
+        pattern_ref = skio.imread(main_pathname / './images /Masque_hantel_{}.png'.format(k))
         pattern_ref = pattern_ref[:, :, :3]
         pattern_ref = skc.rgb2gray(pattern_ref)
         result = skf.match_template(image, pattern_ref, mode = 'mean')
         matchs.append(result)
     
-    #on cherche le maximum des matchs pour les différents template
+    #Deuxième étape 
     max_unique_value = float('-inf')
     maxi = None
     
@@ -274,10 +306,8 @@ def detection_pattern_anthem(image):
     ij = np.unravel_index(np.argmax(maxi), maxi.shape)
     x, y = ij[::-1]
 
-
     hcoin, wcoin = pattern_ref.shape
     rect = plt.Rectangle((x, y), wcoin, hcoin, edgecolor='r', facecolor='none')
-    
     matched_area = image[y:y+hcoin, x:x+wcoin]
 
 
@@ -288,8 +318,14 @@ def detection_pattern_anthem(image):
 
 
 
-#ajout de la fonction d'Alexis
+
 def filtrage(img):
+    
+    '''Fonction pour le filtrage 
+    
+    
+    
+    '''
     
     img = skc.rgb2gray(img)
     img = ske.equalize_adapthist(img,clip_limit=0.01)
@@ -300,18 +336,9 @@ def filtrage(img):
     img = sku.img_as_uint(img)
     img = sku.img_as_ubyte(img)
     img = img/255
-    # if(np.min(img)<0): #
-    #     img = img - np.min(img) #
-    #     img = img * int(255/np.max(img)) #
-
-    # img = img.astype(np.uint8) #
     
-    # img = cv2.Canny(img, 100,200) #
-    # img = skm.binary_closing(img, footprint= skm.disk(3)) #
     seuil = 0.2
     img = (img < seuil)  #image binaire
-    # plt.figure()
-    # plt.imshow(img, cmap='gray')
     return img
 
 
@@ -319,19 +346,23 @@ def filtrage(img):
 
 def detection_point (chemin):
     
+    '''Fonction "main" -> celle qui est appelée par l'exécutable 
+    
+    Elle récupère l'image qui a été segmentée, elle appelle la fonction filtrage 
+    Puis detection_automatique_cubital(img) et detection_automatique_hantel(img, dist)
+    
+    Elle retourne les indices qui seront stockés dans le fichier excel
+    '''
+    
     
     plt.close('all')
     
     img = chemin
     img = img[:, :, :3]
-    
-    
     img = filtrage(img)
     
-    #skio.imsave(main_pathname/'../images/img.png', img) # à dégager après
-    
-    
+        
     dist,indice_cubital = detection_automatique_cubital(img)
-    indice_anthem = detection_automatique_anthem(img, dist)
+    indice_hantel = detection_automatique_hantel(img, dist)
 
-    return (indice_cubital, indice_anthem)
+    return (indice_cubital, indice_hantel)
