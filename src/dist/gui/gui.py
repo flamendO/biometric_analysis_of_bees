@@ -19,6 +19,7 @@ import sys
 import shutil
 import time
 import ctypes
+import webbrowser
 
 # customtkinter.set_appearance_mode("dark")
 # customtkinter.set_default_color_theme("green")
@@ -167,6 +168,9 @@ def results():
         
 
 
+def help():
+    url = "https://github.com/flamendO/biometric_analysis_of_bees"
+    webbrowser.open(url)
 
 ####### LOGO
 
@@ -196,6 +200,9 @@ button3.place(x=550, y=150)
 
 button4 = customtkinter.CTkButton(master=root, text="QUITTER", command=exit, font=font1)
 button4.place(x=800, y=150)
+
+button5 = customtkinter.CTkButton(master=root, text="AIDE", command=help, font=font1)
+button5.place(x=430, y=500)
 
 
 def is_admin():
