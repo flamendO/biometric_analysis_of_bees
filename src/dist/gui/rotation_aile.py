@@ -8,6 +8,13 @@ import skimage.filters as skf
 import skimage.morphology as morpho
 from skimage.util import img_as_float
 import os
+
+"""Rotation aile est un module permettant de retourner une image d'aile en fonction de
+la plus grosse nervure de l'aile.
+
+
+
+"""
 def rotate_wing(img_path):
     
 

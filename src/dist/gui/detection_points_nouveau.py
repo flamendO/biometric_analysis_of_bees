@@ -249,7 +249,7 @@ def detection_pattern_cubital(image):
 def detection_pattern_anthem(image):
     
     matchs = []
-    for k in range (1, 6) :
+    for k in range (1, 8) :
         pattern_ref = skio.imread(main_pathname / './images /Masque_anthem_{}.png'.format(k))
         pattern_ref = pattern_ref[:, :, :3]
         pattern_ref = skc.rgb2gray(pattern_ref)
