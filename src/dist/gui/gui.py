@@ -211,7 +211,7 @@ if is_admin():
     root.mainloop()
 else:
     run_as_admin()
-    #root.mainloop()
+    root.mainloop()
 
 
 
