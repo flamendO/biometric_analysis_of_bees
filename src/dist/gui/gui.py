@@ -21,8 +21,6 @@ import time
 import ctypes
 import webbrowser
 
-# customtkinter.set_appearance_mode("dark")
-# customtkinter.set_default_color_theme("green")
 
 root = customtkinter.CTk()
 root.attributes("-fullscreen", False)  # Mettre en plein écran
@@ -79,8 +77,6 @@ def open_bar():
 
 def perform_analysis():
     tmp_path = "./tmp/"
-    # shutil.rmtree(tmp_path)
-    # os.mkdir("./tmp/")
 
     for file_name in os.listdir(tmp_path):
         file_path = os.path.join(tmp_path, file_name)
@@ -130,10 +126,6 @@ def perform_analysis():
     df = pd.DataFrame(data_set, columns=columns)
     
 
-    # font2=customtkinter.CTkFont(family="Sans serif", size=20, weight="bold")
-    # affichage_result = tk.Label(root, text="ANALYSE TERMINÉE ! ", font=font2, bg=bg, fg="white")
-    # affichage_result.place(y=500, x=400)
-
     messagebox.showinfo("Terminé", "ANALYSE TERMINÉE !")
 
 
@@ -162,8 +154,6 @@ def results():
         
         if filepath:
             toExcel(df, filepath)
-            # affichage_result_2 = tk.Label(root, text="FICHIER SAUVEGARDÉ ! ",font=font2, bg=bg, fg="white" )
-            # affichage_result_2.place(x= 395, y = 550)
             messagebox.showinfo("Terminé", "FICHIER SAUVEGARDÉ ! ")
         
 
@@ -186,8 +176,6 @@ logo.pack(side=tk.TOP,pady=10)
 
 font1=customtkinter.CTkFont(family="Sans serif", size=20, weight="bold")
 
-# button_frame = customtkinter.CTkFrame(master=root)  # Créer un cadre pour les boutons
-# button_frame.pack(side=tk.BOTTOM, pady=80, padx=100)  # Ajouter une marge en haut
 
 button1 = customtkinter.CTkButton(master=root, text="IMPORTER", command=open_file_dialog, font=font1)
 button1.place(x=50, y=150)

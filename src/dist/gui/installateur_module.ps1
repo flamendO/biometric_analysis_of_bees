@@ -5,7 +5,6 @@ pip install customtkinter
 pip install Pillow
 pip install numpy
 pip install matplotlib
-pip install os
 pip install openpyxl
 pip install pandas
 pip install scikit-image
