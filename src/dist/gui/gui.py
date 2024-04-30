@@ -36,15 +36,14 @@ progress_bar = None
 affichage_result_key = False
 
 
-def exit():
+def exit(): # Termine le programme proprement 
     global root
-    root.quit()  # Terminer le mainloop de Tkinter
-    root.destroy()  # Détruire la fenêtre principale
-    sys.exit()  # Terminer le programme proprement
+    root.quit()  
+    root.destroy()  
+    sys.exit()  
 
 def importer():
     global filename
-    #print(filename)
 
 def open_file_dialog():
     global filename
@@ -98,7 +97,6 @@ def perform_analysis():
 
     progress_bar.start()
     
-    # Chemin du fichier 
     path = filename
 
     # Séparation des ailes 
@@ -111,10 +109,7 @@ def perform_analysis():
         image_tmp, angle_tmp = rotate_wing(os.path.join(os.getcwd(), str(i) + '.png'))
         angles[i-1] = angle_tmp
         images_list.append(np.array(image_tmp))
-        #print(os.path.join(os.getcwd(), str(i) + '.png'))
         
-        progress_value = (i / indice) * 100 # mise a jour barre de progression
-        # progress_bar["value"] = progress_value
         root.update_idletasks()
 
 
@@ -135,8 +130,7 @@ def perform_analysis():
     font2=customtkinter.CTkFont(family="Sans serif", size=20, weight="bold")
     affichage_result = tk.Label(root, text="ANALYSE TERMINÉE ! ", font=font2, bg=bg, fg="white")
     affichage_result.place(y=500, x=400)
-    # plt.imshow(images_list[12])
-    # plt.show()
+    
     
 
 
@@ -176,9 +170,7 @@ logo = tk.Label(root, image=img_logo_resized, bg=bg, fg="white" )
 
 logo.pack(side=tk.TOP,pady=10)
 
-# label = customtkinter.CTkLabel(master=frame, text="Projet Abeille", font=("Roboto", 56))
-# label.pack(pady=12, padx=10)
-########
+
 
 font1=customtkinter.CTkFont(family="Sans serif", size=20, weight="bold")
 
