@@ -3,9 +3,13 @@ import numpy as np
 import os 
 import openpyxl
 
-# Fonction qui prends un dataframe en entrée, la structre du dataframe doit être comme suit :
-# N lignes correspondants aux N images analysées,
-# 3 colonnes pour les valeurs des indices
+"""
+
+Fonction qui prends un dataframe en entrée et un chemin de fichier, la structre du dataframe doit être comme suit :
+N lignes correspondants aux N images analysées, 2 colonnes pour les valeurs des indices. Elle ne retourne rien mais
+sauvegarde un fichier contenant les valeurs des indices, les moyennes et écarts types.
+
+"""
 
 def toExcel(dataset, file_path):
     path = os.getcwd()
@@ -17,7 +21,8 @@ def toExcel(dataset, file_path):
     
     print("\nNous sommes à la feuille : " + str(sheet.title))
    
-    # Écriture des noms de colonnes
+    # Écriture des noms de colonnes, pour se placer sur une case du fichier Excel il faut écrire 
+    # LETTRENUMERO, par exemple : A1. L'indicage commence à 1 
     for j in range(lettre_debut, lettre_debut + dataset.shape[1]):
         sheet[chr(j) + "1"] = dataset.columns[j - lettre_debut]
    
@@ -27,8 +32,8 @@ def toExcel(dataset, file_path):
             sheet[chr(j) + str(i + 2)].value = dataset.iloc[i, j - lettre_debut]
    
     # Écriture des moyennes et des écarts types
-    moyenne = ["moy indice cubital", "moy transgression", "moyenne hantel"]
-    ecart_type = ["E-T indice cubital", "E-T transgression", "E-T hantel"]
+    moyenne = ["moy indice cubital", "moyenne hantel"]
+    ecart_type = ["E-T indice cubital", "E-T hantel"]
    
     for i in range(dataset.shape[1]):
         # Ecriture des moyennes
