@@ -127,9 +127,14 @@ def perform_analysis():
     df = pd.DataFrame(data_set, columns=columns)
     
 
-    font2=customtkinter.CTkFont(family="Sans serif", size=20, weight="bold")
-    affichage_result = tk.Label(root, text="ANALYSE TERMINÉE ! ", font=font2, bg=bg, fg="white")
-    affichage_result.place(y=500, x=400)
+    # font2=customtkinter.CTkFont(family="Sans serif", size=20, weight="bold")
+    # affichage_result = tk.Label(root, text="ANALYSE TERMINÉE ! ", font=font2, bg=bg, fg="white")
+    # affichage_result.place(y=500, x=400)
+
+    messagebox.showinfo("Terminé", "ANALYSE TERMINÉE !")
+
+
+
     
     
 
@@ -154,8 +159,9 @@ def results():
         
         if filepath:
             toExcel(df, filepath)
-            affichage_result_2 = tk.Label(root, text="FICHIER SAUVEGARDÉ ! ",font=font2, bg=bg, fg="white" )
-            affichage_result_2.place(x= 395, y = 550)
+            # affichage_result_2 = tk.Label(root, text="FICHIER SAUVEGARDÉ ! ",font=font2, bg=bg, fg="white" )
+            # affichage_result_2.place(x= 395, y = 550)
+            messagebox.showinfo("Terminé", "FICHIER SAUVEGARDÉ ! ")
         
 
 
@@ -203,6 +209,7 @@ if is_admin():
     root.mainloop()
 else:
     run_as_admin()
+    root.mainloop()
 
 
 
