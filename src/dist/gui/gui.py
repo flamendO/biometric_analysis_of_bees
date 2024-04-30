@@ -169,7 +169,7 @@ def results():
 
 
 def help():
-    url = "https://github.com/flamendO/biometric_analysis_of_bees"
+    url = "https://github.com/flamendO/biometric_analysis_of_bees/wiki"
     webbrowser.open(url)
 
 ####### LOGO
