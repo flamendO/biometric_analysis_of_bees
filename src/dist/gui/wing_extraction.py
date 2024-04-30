@@ -57,8 +57,8 @@ def wing_extraction(filename): # Avec l'extension
 
 
     kernel = cv2.getStructuringElement(cv2.MORPH_RECT,(10,10))
-    # final2 = cv2.erode(opening2,kernel,iterations = 4)
-    final3 = cv2.dilate(opening2,kernel,iterations = 4)
+    final2 = cv2.erode(opening2,kernel,iterations = 4)
+    final3 = cv2.dilate(final2,kernel,iterations = 4)
     
     # A partir de la on va commencer la détection des rectangles, on ouvre l'image initiale pour ensuite 
     # découper les rectangles par dessus.

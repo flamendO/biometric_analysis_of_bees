@@ -98,15 +98,16 @@ def perform_analysis():
     progress_bar.start()
     
     path = filename
-
+    
     # Séparation des ailes 
     indice = wing_extraction(path)
-
+    
     # Rotation des ailes 
     angles = np.zeros((indice)) # Array avec les angles de rotation de chaque image si nécessaire
     os.chdir("./save")
     for i in range(1, indice+1):
         image_tmp, angle_tmp = rotate_wing(os.path.join(os.getcwd(), str(i) + '.png'))
+        
         angles[i-1] = angle_tmp
         images_list.append(np.array(image_tmp))
         
@@ -119,6 +120,7 @@ def perform_analysis():
     i = 0
     for img_retourne in images_list:
         indice_cubi , indice_anthem = detection_point(img_retourne)
+        
         data_set[i,:] = np.array([indice_cubi, indice_anthem])
         i+=1
     progress_bar.stop()
@@ -209,7 +211,7 @@ if is_admin():
     root.mainloop()
 else:
     run_as_admin()
-    
+    #root.mainloop()
 
 
 
