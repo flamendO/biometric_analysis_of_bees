@@ -61,17 +61,18 @@ def open_file_dialog():
 def open_bar():
     global progress_bar
     if not filename:
-        messagebox.showerror("Erreur", "Aucune image n'a été selectionné !")
+        messagebox.showerror("Erreur", "Aucune image n'a été sélectionnée !")
     else:
-        
         progress_window = tk.Toplevel(root)
         progress_window.title("Generating")
         progress_window.geometry("300x100")
     
         progress_bar = ttk.Progressbar(progress_window, orient="horizontal", length=200, mode="indeterminate")
         progress_bar.pack(pady=20)
-        perform_analysis()
-        progress_window.destroy()
+        
+        # multithereading
+        analysis_thread = threading.Thread(target=perform_analysis)
+        analysis_thread.start()
 
 
 
