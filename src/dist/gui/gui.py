@@ -33,7 +33,7 @@ root.config(bg=bg)
 filename = ""
 progress_bar = None
 affichage_result_key = False
-
+global progress_window
 
 def exit(): # Termine le programme proprement 
     global root
@@ -60,6 +60,7 @@ def open_file_dialog():
 
 def open_bar():
     global progress_bar
+    global progress_window
     if not filename:
         messagebox.showerror("Erreur", "Aucune image n'a été sélectionnée !")
     else:
@@ -126,7 +127,7 @@ def perform_analysis():
     columns = ['Indice cubitale', 'Indice Hantel']
     df = pd.DataFrame(data_set, columns=columns)
     
-
+    progress_window.destroy()
     messagebox.showinfo("Terminé", "ANALYSE TERMINÉE !")
 
 
@@ -207,7 +208,8 @@ if is_admin():
     root.mainloop()
 else:
     run_as_admin()
-    root.mainloop()
+    
+    
 
 
 

@@ -1,3 +1,5 @@
 Pour installer Black Bees, suivez les etapes.
 
-Program published by SICOM
+Page du projet : https://github.com/flamendO/biometric_analysis_of_bees
+
+Documentation : https://github.com/flamendO/biometric_analysis_of_bees/wiki/Page-Principale
